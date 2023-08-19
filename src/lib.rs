@@ -1,27 +1,39 @@
+
 enum ItemType {
     File,
     Folder,
 }
 
 struct Item {
-    pub name: std::ffi::OsString,
+    pub name: String,
     pub item_type: ItemType,
 }
 
-const COLUMN_WIDTH: u32 = 5;
+const COLUMN_MAX: u32 = 5;
+const CHARACTER_LIMIT: usize = 25;
+
+fn cutoff_long_item_names(items: &mut Vec<Item>) {
+    for item in items.iter_mut() {
+        if item.name.len() > CHARACTER_LIMIT {
+            let buffer_name = item.name.clone();
+            item.name = buffer_name[0..(CHARACTER_LIMIT-3)].to_string();
+            item.name.push_str("...");
+        }
+    }
+}
 
 fn display_items(items: Vec<Item>) {
     let mut column_count: u32 = 0;
 
     for item in items.iter() {
-        if column_count >= COLUMN_WIDTH {
+        if column_count >= COLUMN_MAX {
             println!();
             column_count = 0;
         } 
 
         match item.item_type {
-            ItemType::File => print!("\x1b[38;2;129;138;253m{}\x1b[0m", item.name.to_str().unwrap()),
-            ItemType::Folder => print!("\x1b[38;2;193;66;202;4m{}\x1b[0m", item.name.to_str().unwrap()), 
+            ItemType::File => print!("\x1b[38;2;129;138;253m{}\x1b[0m", item.name),
+            ItemType::Folder => print!("\x1b[38;2;193;66;202;4m{}\x1b[0m", item.name), 
         };
 
         print!("{: <10}", "");
@@ -41,7 +53,7 @@ pub fn run() {
 
     for item in raw_items {
         items.push(Item {
-            name: item.as_ref().unwrap().file_name(),
+            name: item.as_ref().unwrap().file_name().into_string().unwrap(),
             item_type: match item.as_ref().unwrap().file_type() {
                 Ok(x) => {
                     if x.is_dir() {
@@ -55,5 +67,6 @@ pub fn run() {
         });
     }
 
+    cutoff_long_item_names(&mut items);
     display_items(items);
 }
