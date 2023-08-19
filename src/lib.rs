@@ -11,6 +11,7 @@ struct Item {
 
 const COLUMN_MAX: u32 = 5;
 const CHARACTER_LIMIT: usize = 25;
+const COLUMN_WIDTH: usize = 40;
 
 fn cutoff_long_item_names(items: &mut Vec<Item>) {
     for item in items.iter_mut() {
@@ -36,7 +37,7 @@ fn display_items(items: Vec<Item>) {
             ItemType::Folder => print!("\x1b[38;2;193;66;202;4m{}\x1b[0m", item.name), 
         };
 
-        print!("{: <10}", "");
+        print!("{: <1$}", "", COLUMN_WIDTH-item.name.len());
 
         column_count += 1;
     }
