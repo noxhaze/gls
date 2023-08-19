@@ -9,7 +9,6 @@ struct Item {
 }
 
 const COLUMN_WIDTH: u32 = 5;
-const BLANK_SPACE_AMOUNT: u32 = 10;
 
 fn display_items(items: Vec<Item>) {
     let mut column_count: u32 = 0;
@@ -25,9 +24,7 @@ fn display_items(items: Vec<Item>) {
             ItemType::Folder => print!("\x1b[38;2;193;66;202;4m{}\x1b[0m", item.name.to_str().unwrap()), 
         };
 
-        for _i in 0..BLANK_SPACE_AMOUNT {
-            print!(" ");
-        }
+        print!("{: <10}", "");
 
         column_count += 1;
     }
