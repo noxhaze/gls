@@ -11,7 +11,7 @@ struct Item {
 
 const COLUMN_MAX: u32 = 5;
 const CHARACTER_LIMIT: usize = 25;
-const COLUMN_WIDTH: usize = 40;
+const COLUMN_WIDTH: usize = 35;
 
 fn cutoff_long_item_names(items: &mut Vec<Item>) {
     for item in items.iter_mut() {
