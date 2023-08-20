@@ -60,7 +60,7 @@ pub fn run() {
     let mut items: Vec<Item> = vec![];
 
     for item in raw_items {
-        items.push(Item {
+        let buffer_item = Item {
             name: item.as_ref().unwrap().file_name().into_string().unwrap(),
             item_type: match item.as_ref().unwrap().file_type() {
                 Ok(x) => {
@@ -72,7 +72,12 @@ pub fn run() {
                 }
                 Err(e) => panic!("Error reading file type: {}", e),
             },
-        });
+        };
+
+        match buffer_item.item_type {
+            ItemType::File => items.push(buffer_item),
+            ItemType::Folder => items.insert(0, buffer_item),
+        };
     }
 
     cutoff_long_item_names(&mut items);
