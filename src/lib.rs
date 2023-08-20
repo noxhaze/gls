@@ -1,3 +1,4 @@
+extern crate termsize;
 
 enum ItemType {
     File,
@@ -9,7 +10,6 @@ struct Item {
     pub item_type: ItemType,
 }
 
-const COLUMN_MAX: u32 = 5;
 const CHARACTER_LIMIT: usize = 25;
 const COLUMN_WIDTH: usize = 35;
 
@@ -23,11 +23,18 @@ fn cutoff_long_item_names(items: &mut Vec<Item>) {
     }
 }
 
+fn calculate_column_max() -> u32 {
+    let size: termsize::Size = termsize::get().unwrap();
+
+    (size.cols/(COLUMN_WIDTH as u16)).into()
+}
+
 fn display_items(items: Vec<Item>) {
     let mut column_count: u32 = 0;
+    let column_max = calculate_column_max();
 
     for item in items.iter() {
-        if column_count >= COLUMN_MAX {
+        if column_count >= column_max {
             println!();
             column_count = 0;
         } 
